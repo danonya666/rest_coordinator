@@ -11,6 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.mariadb.jdbc:mariadb-java-client:2.3.0" level="project" />
+    <orderEntry type="library" name="Maven: com.oracle.java:jre:1.8.0_131" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.sqlserver:mssql-jdbc:7.1.2.jre11-preview" level="project" />
   </component>
 </module>
