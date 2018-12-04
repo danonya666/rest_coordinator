@@ -78,6 +78,25 @@ public class Restaraunt {
         return coordinates_;
     }
 
+    public String seastsAndHoursMapToJson(){
+        int[] result = new int[24];
+        int size = seatsAndHoursMap_.size();
+        for(int i = 0; i < size; ++i){
+            result[i] =
+                    getSeatsAndHoursMap__().get(0);
+        }
+        String resStr = "{";
+        for(int i = 0; i < result.length; ++i){
+            resStr += result[i];
+            resStr += ", ";
+        }
+        resStr = resStr.substring(0, resStr.length() - 2);
+        resStr += "}";
+
+        System.out.println(resStr);
+        return resStr;
+    }
+
     private Restaraunt(Cost averageCost, Time openTime, Time closeTime, Map<Integer, Integer> seatsAndHoursMap,
                        Coordinates coordinates, int id, String name, RestaurantManager restaurantManager) {
         averageCost_ = averageCost;
@@ -152,9 +171,9 @@ public class Restaraunt {
         }
 
         public Restaraunt build() {
-            for (int i = openTime_.getHours_(); i <= closeTime_.lastNeededHour(); ++i) {
+            for (int i = 0; i <= 23; ++i) {
                 if (!seatsAndHoursMap_.containsKey(i)) {
-                    seatsAndHoursMap_.put(i, null);
+                    seatsAndHoursMap_.put(i, 0);
                 }
             }
 

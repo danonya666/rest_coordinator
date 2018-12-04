@@ -1,10 +1,13 @@
 package UserInterface;
 
+import DataBase.dao_postgres;
+import DataBase.dbConfig;
 import Domain.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -137,6 +140,7 @@ public class AddRestaurantFrame extends Frame{
                             builder.setRestaurantManager(restaurantManager);
                             builder.setSeatsAndHoursMap_(seatsAndHoursMap);
                             Restaraunt restaraunt = builder.build();
+
                             restaurantManager.addRestaurant(restaraunt);
                             //System.out.println(Restaraunt.RestarauntsArrayList.getByIndex(0).getName_());
                             String dialougeString = MessageFormat.format("Restaurant {0} was successfully added to the database!", builder.getName_());

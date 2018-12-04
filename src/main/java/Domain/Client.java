@@ -1,5 +1,6 @@
 package Domain;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import java.time.LocalTime;
@@ -62,16 +63,18 @@ public class Client {
     }
 
     public Restaraunt getOptimalRestaraunt(int radius, Cost supposedCost, int quantityOfPeople,
-                                           Coordinates currCoords, RestaurantManager restaurantManager){
-                Map<Integer, Restaraunt> goodRestaraunts = new HashMap<Integer, Restaraunt>();
-                for(int i = 0; i < restaurantManager.size(); ++i){
-                        Restaraunt restaraunt = restaurantManager.getByIndex(i);
-                        double distance = currCoords.distance(restaraunt.getCoordinates_());
-                        if(distance > radius) continue;
-                        int costDifference = Math.abs(supposedCost.substraction(restaraunt.getAverageCost_()));
-                        Time currTime = new Time(LocalTime.now().getHour(), LocalTime.now().getMinute());
-                        Time timeNeededToComeToRestaraunt = new Time();
-                        double dTimeNeededToComeToRestaraunt = distance * 1000; // in minutes
+                                           Coordinates currCoords, RestaurantManager restaurantManager) throws SQLException {
+        Map<Integer, Restaraunt> goodRestaraunts = new HashMap<>();
+        restaurantManager.updateList();
+        for(int i = 0; i < restaurantManager.size(); ++i){
+
+            Restaraunt restaraunt = restaurantManager.getByIndex(i);
+            double distance = currCoords.distance(restaraunt.getCoordinates_());
+            if(distance > radius) continue;
+            int costDifference = Math.abs(supposedCost.substraction(restaraunt.getAverageCost_()));
+            Time currTime = new Time(LocalTime.now().getHour(), LocalTime.now().getMinute());
+            Time timeNeededToComeToRestaraunt = new Time();
+            double dTimeNeededToComeToRestaraunt = distance * 1000; // in minutes
 
             int minutesNeededToComeToRestaraunt = (int)Math.round(dTimeNeededToComeToRestaraunt);
 
@@ -100,6 +103,3 @@ public class Client {
         return new Restaraunt(); // if no restaurant is inside the criteria
     }
 }
-
-
-

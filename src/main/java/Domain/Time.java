@@ -9,6 +9,11 @@ public class Time {
         this.minutes_ = minutes_;
     }
 
+    public Time(int big){
+        hours_ = big;
+        minutes_ = 0;
+    }
+
     public Time(){
         this.hours_ = 0;
         this.minutes_ = 0;

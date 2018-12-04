@@ -15,6 +15,11 @@ public class Cost {
             this.currency_ = currency_;
     }
 
+    public Cost(int bigValue){
+        bigValue_ = bigValue;
+        smallValue = 0;
+        currency_ = "rubles";
+    }
     public Cost() {
     }
 

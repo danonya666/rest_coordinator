@@ -1,22 +1,24 @@
 package UserInterface;
 
+import DataBase.dao_postgres;
 import Domain.Config;
 import Domain.RestaurantManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 
 public class ViewRestaurantListFrame extends Frame{
     Frame mainFrame;
     private JTable restaurantJTable;
     private Button closeButton;
 
-    ViewRestaurantListFrame(RestaurantManager rM){
+    ViewRestaurantListFrame(RestaurantManager rM) throws SQLException {
         prepareFrame(rM);
     }
 
-    private void prepareFrame(RestaurantManager rM){
+    private void prepareFrame(RestaurantManager rM) throws SQLException {
         mainFrame = new Frame();
         mainFrame.setSize(Config.getScreenResolutionWidth(),Config.getScreenResolutionHeight());
         restaurantJTable = new JTable(rM.restaurantCount(), 7);
@@ -35,6 +37,7 @@ public class ViewRestaurantListFrame extends Frame{
         mainFrame.add(closeButton, index++);
         mainFrame.setLayout(new GridLayout(0, 1));
         mainFrame.setVisible(true);
+        rM.updateList();
         if(rM.restaurantCount() == 0){
             JOptionPane.showMessageDialog(mainFrame, "View list is empty");
             mainFrame.dispose();
@@ -48,8 +51,10 @@ public class ViewRestaurantListFrame extends Frame{
         });
     }
 
-    private void fillTheTable(RestaurantManager rM){
-        int restaurantCount = rM.restaurantCount();
+    private void fillTheTable(RestaurantManager rM) throws SQLException {
+        rM.updateList();
+        int restaurantCount = rM.countRests();
+        System.out.println(rM.getByIndex(0).getName_());
         restaurantJTable.getColumnModel().getColumn(0).setHeaderValue("ID");
         restaurantJTable.getColumnModel().getColumn(1).setHeaderValue("NAME");
         restaurantJTable.getColumnModel().getColumn(2).setHeaderValue("OPEN HOUR");

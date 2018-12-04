@@ -1,11 +1,14 @@
 package UserInterface;
 
+import DataBase.dao_postgres;
+import DataBase.dbConfig;
 import Domain.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,7 +109,11 @@ public class AwtDemo {
         viewRestaurantListBtn_.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Frame viewRestaurantListFrame = new ViewRestaurantListFrame(restaurantManager);
+                try {
+                    Frame viewRestaurantListFrame = new ViewRestaurantListFrame(restaurantManager);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
     }
@@ -253,6 +260,15 @@ public class AwtDemo {
                             builder.setRestaurantManager(restaurantManager);
                             builder.setSeatsAndHoursMap_(seatsAndHoursMap);
                             Restaraunt restaraunt = builder.build();
+                            dao_postgres dao_postgres = new dao_postgres();
+                            dao_postgres.Connect("postgres", dbConfig.dbPassword);
+                            try {
+                                dao_postgres.insert(restaraunt);
+                                System.out.println("Restaurant successfully added");
+                            } catch (SQLException e1) {
+                                System.out.println("ERROR");
+                                e1.printStackTrace();
+                            }
                             restaurantManager.addRestaurant(restaraunt);
                             //System.out.println(Restaraunt.RestarauntsArrayList.getByIndex(0).getName_());
                             String dialougeString = MessageFormat.format("Restaurant {0} was successfully added to the database!", builder.getName_());
