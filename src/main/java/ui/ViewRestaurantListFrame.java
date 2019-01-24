@@ -1,6 +1,7 @@
 package ui;
 
-import db.DaoPostgres;
+import db.DaoBase;
+import db.RestDao;
 import domain.Config;
 import domain.RestaurantManager;
 
@@ -16,10 +17,10 @@ public class ViewRestaurantListFrame extends Frame{
     private JTable restaurantJTable;
     private Button closeButton;
     private Button restButton[];
-    private DaoPostgres DaoPostgres;
+    private DaoBase restDao;
     private JProgressBar progressBar;
     ViewRestaurantListFrame(RestaurantManager rM) throws SQLException, InterruptedException {
-        DaoPostgres = rM.getDao();
+        restDao = rM.getDao();
         prepareFrame(rM);
     }
 
@@ -41,7 +42,7 @@ public class ViewRestaurantListFrame extends Frame{
         prepareProgressBar(index[0]++);
         rM.updateList(progressBar);
         mainFrame.setSize(Config.getScreenResolutionWidth(),Config.getScreenResolutionHeight());
-        int restCount = DaoPostgres.count();
+        int restCount = restDao.count();
         System.out.println(restCount);
         restButton = new Button[restCount];
         for(int i = 0; i < restCount; ++i){

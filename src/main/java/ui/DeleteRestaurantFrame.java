@@ -33,7 +33,7 @@ public class DeleteRestaurantFrame {
         controlPanel = new Panel();
         deleteRestaurantFrame.add(controlPanel);
 
-        nameTF = new TextField("Enter Name of the Restaurant");
+        nameTF = new TextField("Some_restaurant");
         controlPanel.add(nameTF);
 
         closeBtn = new Button("Close");
@@ -47,7 +47,7 @@ public class DeleteRestaurantFrame {
 
         deleteRestaurantBtn = new Button("Delete");
         deleteRestaurantBtn.addActionListener(new ActionListener() {
-            //TODO debug Restaraunt.delete function
+            //TODO debug Restaurant.delete function
             @Override
             public void actionPerformed(ActionEvent e) {
                 int result = 0;

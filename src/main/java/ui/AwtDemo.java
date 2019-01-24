@@ -1,7 +1,9 @@
 package ui;
 
-import db.DaoPostgres;
-import db.DbConfig;
+import common.Coordinates;
+import common.Cost;
+import common.Time;
+import db.RestDao;
 import domain.*;
 
 import javax.swing.*;
@@ -16,13 +18,14 @@ import java.util.Map;
 public class AwtDemo {
     /* GENERAL COMPONENTS */
     private Frame mainFrame_;
-    private DaoPostgres DaoPostgres;
+    private RestDao RestDao;
     private Label headerLabel_;
     //private Panel mainFrame_;
     private Button addRestaurantButton_;
     private Button deleteRestaurantButton_;
     private Button findOptimalRestaurantButton_;
     private Button viewRestaurantListBtn_; // TODO
+    private Button fillDbBtn;
 
     /* ADD RESTAURANT COMPONENTS */
 
@@ -79,7 +82,7 @@ public class AwtDemo {
 
     private void prepareGui(RestaurantManager restaurantManager) throws SQLException {
         //prepareViewList(restaurantManager);
-        mainFrame_ = new Frame("Restaraunt Coordinator");
+        mainFrame_ = new Frame("Restaurant Coordinator");
         mainFrame_.setSize(Config.getScreenResolutionWidth(), Config.getScreenResolutionHeight());
         mainFrame_.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent) {
@@ -94,8 +97,19 @@ public class AwtDemo {
         headerLabel_.setForeground(Color.BLACK);
 
         mainFrame_.setBackground(Color.PINK);
+        fillDbBtn = new Button("Fill the Database");
+        fillDbBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    FillDataBaseFrame fdbFrame = new FillDataBaseFrame(restaurantManager);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
         addRestaurantButton_ = new Button();
-        addRestaurantButton_.setLabel("ADD");
+        addRestaurantButton_.setLabel("Create new restaurant");
         addRestaurantButton_.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -115,7 +129,7 @@ public class AwtDemo {
         });
 
         deleteRestaurantButton_ = new Button();
-        deleteRestaurantButton_.setLabel("DELETE");
+        deleteRestaurantButton_.setLabel("Delete a restaurant");
         deleteRestaurantButton_.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -124,7 +138,7 @@ public class AwtDemo {
         });
 
         findOptimalRestaurantButton_ = new Button();
-        findOptimalRestaurantButton_.setLabel("FIND THE BEST");
+        findOptimalRestaurantButton_.setLabel("Find the best restaurant");
         findOptimalRestaurantButton_.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -133,7 +147,7 @@ public class AwtDemo {
         });
 
         viewRestaurantListBtn_ = new Button();
-        viewRestaurantListBtn_.setLabel("View List");
+        viewRestaurantListBtn_.setLabel("View the list of restaurants");
         viewRestaurantListBtn_.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -155,6 +169,7 @@ public class AwtDemo {
         mainFrame_.add(deleteRestaurantButton_);
         mainFrame_.add(findOptimalRestaurantButton_);
         mainFrame_.add(viewRestaurantListBtn_);
+        mainFrame_.add(fillDbBtn);
         mainFrame_.setLayout(new GridLayout(15, 4));
     }
 
@@ -171,7 +186,7 @@ public class AwtDemo {
         gbc.gridy = 0;*/
         clearMainFrame();
         int index = 0;
-        nameTextField = new TextField("Enter Name of the restaurant");
+        nameTextField = new TextField("Some_restaurant");
         mainFrame_.add(nameTextField, index++);
 
 
@@ -179,35 +194,35 @@ public class AwtDemo {
         nameLabel.setBackground(Color.lightGray);
         mainFrame_.add(nameLabel, index++);
 
-        openHoursTextField = new TextField("Enter opening hour");
+        openHoursTextField = new TextField("17");
         mainFrame_.add(openHoursTextField, index++);
 
         openHoursLabel = new Label("Open hours");
         openHoursLabel.setBackground(Color.lightGray);
         mainFrame_.add(openHoursLabel, index++);
 
-        closeHoursTextField = new TextField("Enter closing hour");
+        closeHoursTextField = new TextField("18");
         mainFrame_.add((closeHoursTextField), index++);
 
         closeHoursLabel = new Label("Close Hours");
         closeHoursLabel.setBackground(Color.lightGray);
         mainFrame_.add(closeHoursLabel, index++);
 
-        averageCostTextField = new TextField("Enter average Cost");
+        averageCostTextField = new TextField("666");
         mainFrame_.add(averageCostTextField, index++);
 
         averageCostLabel = new Label("Average Cost");
         averageCostLabel.setBackground(Color.lightGray);
         mainFrame_.add(averageCostLabel, index++);
 
-        lon = new TextField("Enter Y");
+        lon = new TextField("66");
         mainFrame_.add(lon, index++);
 
         lonLabel = new Label("Longitude");
         lonLabel.setBackground(Color.lightGray);
         mainFrame_.add(lonLabel, index++);
 
-        lat = new TextField("Enter X");
+        lat = new TextField("6");
         mainFrame_.add(lat, index++);
 
         latLabel = new Label("Latitude");
@@ -246,7 +261,7 @@ public class AwtDemo {
                     createNewRestaurantBtn.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            Restaraunt.Builder builder = Restaraunt.newBuilder();
+                            Restaurant.Builder builder = Restaurant.newBuilder();
                             try{
                                 builder.setAverageCost_(getAverageCost());
                             }
@@ -287,20 +302,14 @@ public class AwtDemo {
                                 JOptionPane.showMessageDialog(mainFrame_, "Fill all the requested values pls ;)");
                                 return;
                             }
-                            builder.setRestaurantManager(restaurantManager);
+                            // builder.setRestaurantManager(restaurantManager); ???
                             builder.setSeatsAndHoursMap_(seatsAndHoursMap);
-                            Restaraunt restaraunt = builder.build();
-                            DaoPostgres dao_postgres = new DaoPostgres();
-                            dao_postgres.Connect("postgres", DbConfig.dbPassword);
-                            try {
-                                dao_postgres.insert(restaraunt);
-                                System.out.println("Restaurant successfully added");
-                            } catch (SQLException e1) {
-                                System.out.println("ERROR");
-                                e1.printStackTrace();
-                            }
-                            restaurantManager.addRestaurant(restaraunt);
-                            //System.out.println(Restaraunt.RestarauntsArrayList.getByIndex(0).getName_());
+                            Restaurant restaurant = builder.build();
+                            RestDao dao_postgres = new RestDao();
+                            dao_postgres.create(restaurant);
+                            System.out.println("Restaurant successfully added");
+                            restaurantManager.addRestaurant(restaurant);
+                            //System.out.println(Restaurant.RestarauntsArrayList.getByIndex(0).getName_());
                             String dialougeString = MessageFormat.format("Restaurant {0} was successfully added to the database!", builder.getName_());
                             JOptionPane.showMessageDialog(mainFrame_, dialougeString);
                         }

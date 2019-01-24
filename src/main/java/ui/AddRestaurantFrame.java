@@ -1,5 +1,8 @@
 package ui;
 
+import common.Coordinates;
+import common.Cost;
+import common.Time;
 import domain.*;
 
 import javax.swing.*;
@@ -93,7 +96,7 @@ public class AddRestaurantFrame extends Frame{
                     createNewRestaurantBtn.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            Restaraunt.Builder builder = Restaraunt.newBuilder();
+                            Restaurant.Builder builder = Restaurant.newBuilder();
                             try{
                                 builder.setAverageCost_(getAverageCost());
                             }
@@ -134,12 +137,11 @@ public class AddRestaurantFrame extends Frame{
                                 JOptionPane.showMessageDialog(addRestaurantFrame, "Fill all the requested values pls ;)");
                                 return;
                             }
-                            builder.setRestaurantManager(restaurantManager);
                             builder.setSeatsAndHoursMap_(seatsAndHoursMap);
-                            Restaraunt restaraunt = builder.build();
+                            Restaurant restaurant = builder.build();
 
-                            restaurantManager.addRestaurant(restaraunt);
-                            //System.out.println(Restaraunt.RestarauntsArrayList.getByIndex(0).getName_());
+                            restaurantManager.addRestaurant(restaurant);
+                            //System.out.println(Restaurant.RestarauntsArrayList.getByIndex(0).getName_());
                             String dialougeString = MessageFormat.format("Restaurant {0} was successfully added to the database!", builder.getName_());
                             JOptionPane.showMessageDialog(addRestaurantFrame, dialougeString);
                         }

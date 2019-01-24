@@ -1,0 +1,204 @@
+package domain;//import java.util.ArrayList;
+import common.Coordinates;
+import common.Cost;
+import common.Time;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Restaurant {
+    private Cost averageCost_;
+    private Time openTime_;
+    private Time closeTime_;
+    private Map<Integer, Integer> seatsAndHoursMap_; // Needed Hour, Available Seats
+    private int id_;
+    private Coordinates coordinates_;
+    private String name_;
+    private RestaurantManager restaurantManager;
+
+    public Restaurant(){
+
+    }
+
+    private Restaurant(Builder builder) {
+        setAverageCost_(builder.averageCost_);
+        setOpenTime_(builder.openTime_);
+        setCloseTime_(builder.closeTime_);
+        setSeatsAndHoursMap_(builder.seatsAndHoursMap_);
+        id_ = builder.id_;
+        setCoordinates_(builder.coordinates_);
+        name_ = builder.name_;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+
+    public void setAverageCost_(Cost averageCost_) {
+        this.averageCost_ = averageCost_;
+    }
+
+    public void setOpenTime_(Time openTime_) {
+        this.openTime_ = openTime_;
+    }
+
+    public void setCloseTime_(Time closeTime_) {
+        this.closeTime_ = closeTime_;
+    }
+
+    public void setSeatsAndHoursMap_(Map<Integer, Integer> seatsAndHoursMap) {
+        seatsAndHoursMap_ = seatsAndHoursMap;
+    }
+
+    public void setCoordinates_(Coordinates coordinates_) {
+        this.coordinates_ = coordinates_;
+    }
+
+    public Cost getAverageCost_() {
+        return averageCost_;
+    }
+
+    public Time getOpenTime_() {
+        return openTime_;
+    }
+
+    public Time getCloseTime_() {
+        return closeTime_;
+    }
+
+    public Map<Integer, Integer> getSeatsAndHoursMap__() {
+        return seatsAndHoursMap_;
+    }
+
+    public int getId_() {
+        return id_;
+    }
+
+    public String getName_() {
+        return name_;
+    }
+
+    public Coordinates getCoordinates_() {
+        return coordinates_;
+    }
+
+    public String seatsAndHoursMapToJson(){
+        int[] result = new int[24];
+        int size = seatsAndHoursMap_.size();
+        for(int i = 0; i < size; ++i){
+            result[i] =
+                    getSeatsAndHoursMap__().get(0);
+        }
+        String resStr = "{";
+        for(int i = 0; i < result.length; ++i){
+            resStr += result[i];
+            resStr += ", ";
+        }
+        resStr = resStr.substring(0, resStr.length() - 2);
+        resStr += "}";
+
+        System.out.println(resStr);
+        return resStr;
+    }
+
+    private Restaurant(Cost averageCost, Time openTime, Time closeTime, Map<Integer, Integer> seatsAndHoursMap,
+                       Coordinates coordinates, int id, String name, RestaurantManager restaurantManager) {
+        averageCost_ = averageCost;
+        openTime_ = openTime;
+        closeTime_ = closeTime;
+        seatsAndHoursMap_ = seatsAndHoursMap;
+        coordinates_ = coordinates;
+        id_ = id;
+        name_ = name;
+        this.restaurantManager = restaurantManager;
+    }
+
+    public RestaurantManager getRestaurantManager() {
+        return restaurantManager;
+    }
+
+    public void setRestaurantManager(RestaurantManager restaurantManager) {
+        this.restaurantManager = restaurantManager;
+    }
+
+
+    public static final class Builder {
+        private Cost averageCost_;
+        private Time openTime_;
+        private Time closeTime_;
+        private Map<Integer, Integer> seatsAndHoursMap_;
+        private int id_;
+        private Coordinates coordinates_;
+        private String name_;
+
+        private Builder() {
+        }
+
+        public Builder setAverageCost_(Cost val) {
+            averageCost_ = val;
+            return this;
+        }
+
+        public Builder setOpenTime_(Time val) {
+            openTime_ = val;
+            return this;
+        }
+
+        public Builder setCloseTime_(Time val) {
+            closeTime_ = val;
+            return this;
+        }
+
+        public Builder setSeatsAndHoursMap_(Map<Integer, Integer> val) {
+            seatsAndHoursMap_ = val;
+            return this;
+        }
+
+        public Builder setId_(int val) {
+            id_ = val;
+            return this;
+        }
+
+        public Builder setCoordinates_(Coordinates val) {
+            coordinates_ = val;
+            return this;
+        }
+
+        public Builder setName_(String val) {
+            name_ = val;
+            return this;
+        }
+
+        public String getName_() {
+            return name_;
+        }
+
+        public Restaurant build() {
+            if(seatsAndHoursMap_ != null){
+                for (int i = 0; i <= 23; ++i) {
+                    if (!seatsAndHoursMap_.containsKey(i)) {
+                        seatsAndHoursMap_.put(i, 100);
+                    }
+                }
+            }
+            else{
+                seatsAndHoursMap_ = new HashMap<>();
+
+                for (int i = 0; i <= 23; ++i) {
+                    if (!seatsAndHoursMap_.containsKey(i)) {
+                        seatsAndHoursMap_.put(i, 100);
+                    }
+                }
+            }
+
+            return (new Restaurant(this));
+        }
+
+        public void initializeFromString(String init){
+
+        }
+
+
+    }
+}

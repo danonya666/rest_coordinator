@@ -1,5 +1,9 @@
 package domain;
 
+import common.Coordinates;
+import common.Cost;
+import common.Time;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 
@@ -12,7 +16,7 @@ import java.util.Map;
 
 
 public class Client {
-    private String surename_;
+    private String _surname;
     private String lastname_;
     private int id_;
     protected List<Client> clientArrayList_;
@@ -21,8 +25,8 @@ public class Client {
         return clientArrayList_;
     }
 
-    public String getSurename_() {
-        return surename_;
+    public String getSurename() {
+        return _surname;
     }
 
     public String getLastname_() {
@@ -34,18 +38,16 @@ public class Client {
     }
 
     public void getClientInformation(){
-        System.out.println(surename_);
+        System.out.println(_surname);
         System.out.println(lastname_);
         System.out.println(id_);
     }
     public Client(String surename, String lastname, int id, ArrayList<Client> clientArrayList) {
-        this.surename_ = surename;
+        _surname = surename;
         this.lastname_ = lastname;
         this.id_ = id;
         this.clientArrayList_ = clientArrayList;
     }
-
-
 
     public static class ClientFactory{
         public static int currentId_ = 0;
@@ -62,16 +64,16 @@ public class Client {
         attendance.addToAttendanceList();
     }
 
-    public Restaraunt getOptimalRestaraunt(int radius, Cost supposedCost, int quantityOfPeople,
+    public Restaurant getOptimalRestaurant(int radius, Cost supposedCost, int peopleCount,
                                            Coordinates currCoords, RestaurantManager restaurantManager) throws SQLException, InterruptedException {
-        Map<Integer, Restaraunt> goodRestaraunts = new HashMap<>();
+        Map<Integer, Restaurant> goodRestaraunts = new HashMap<>();
         restaurantManager.updateList();
         for(int i = 0; i < restaurantManager.size(); ++i){
 
-            Restaraunt restaraunt = restaurantManager.getByIndex(i);
-            double distance = currCoords.distance(restaraunt.getCoordinates_());
-            if(distance > radius) continue;
-            int costDifference = Math.abs(supposedCost.substraction(restaraunt.getAverageCost_()));
+            Restaurant restaurant = restaurantManager.getByIndex(i);
+            double distance = currCoords.distance(restaurant.getCoordinates_());
+            //if(distance > radius) continue;
+            int costDifference = Math.abs(supposedCost.subtraction(restaurant.getAverageCost_()));
             Time currTime = new Time(LocalTime.now().getHour(), LocalTime.now().getMinute());
             Time timeNeededToComeToRestaraunt = new Time();
             double dTimeNeededToComeToRestaraunt = distance * 1000; // in minutes
@@ -87,14 +89,14 @@ public class Client {
 
             timeNeededToComeToRestaraunt.setMinutes_(realMinutesNeededToComeToRestaraunt);
 
-            //domain.Time estimatedArrivalTime = timeNeededToComeToRestaraunt.plus(currTime); //Commented because restaraunt doesnt work at this time
-            Time estimatedArrivalTime = new Time(LocalTime.now().getHour(),0);
-            if(estimatedArrivalTime.compare(restaraunt.getCloseTime_()) == 1 ||
-                    estimatedArrivalTime.compare(restaraunt.getOpenTime_()) == -1) continue;
+            //common.Time estimatedArrivalTime = timeNeededToComeToRestaraunt.plus(currTime); //Commented because restaurant doesnt work at this time
+            //Time estimatedArrivalTime = new Time(LocalTime.now().getHour(),0);
+            //if(estimatedArrivalTime.compare(restaurant.getCloseTime_()) == 1 ||
+            //        estimatedArrivalTime.compare(restaurant.getOpenTime_()) == -1) continue;
 
-            //if(quantityOfPeople < restaraunt.getSeatsAndHoursMap__().get(currTime.getHours_()))
-            if(quantityOfPeople < 50)
-                goodRestaraunts.put(costDifference, restaraunt);
+            //if(quantityOfPeople < restaurant.getSeatsAndHoursMap__().get(currTime.getHours_()))
+            //if(peopleCount < 50)
+            goodRestaraunts.put(costDifference + timeNeededToComeToRestaraunt.getHours_() * 25, restaurant);
         }
         for(int i = 0; i < Config.maxAverageCostInRubles; ++i){
             if(!goodRestaraunts.containsKey(i)) continue;

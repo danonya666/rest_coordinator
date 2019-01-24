@@ -1,5 +1,7 @@
 package ui;
 
+import common.Coordinates;
+import common.Cost;
 import domain.*;
 
 import javax.swing.*;
@@ -46,11 +48,11 @@ public class FindTheBestFrame extends Frame{
 
         findTheBestFrame.add(controlPanel);
 
-        radiusTF = new TextField("Enter the radius");
-        prefferedCostTF = new TextField("Enter preferred cost");
-        quantityOfPeopleTF = new TextField("Enter how many people");
-        lonTF = new TextField("Enter lon");
-        latTF = new TextField("Enter lat");
+        radiusTF = new TextField("radius");
+        prefferedCostTF = new TextField("cost");
+        quantityOfPeopleTF = new TextField("people");
+        lonTF = new TextField("lon");
+        latTF = new TextField("lat");
 
         controlPanel.add(radiusTF);
         controlPanel.add(prefferedCostTF);
@@ -78,7 +80,7 @@ public class FindTheBestFrame extends Frame{
                     int lon = CustomFunctions.toInt(lonTF.getText());
                     int lat = CustomFunctions.toInt(latTF.getText());
 
-                    Restaraunt optimal = testClient.getOptimalRestaraunt(radius, new Cost(prefCost, 0, Config.standardCurrencyStr),
+                    Restaurant optimal = testClient.getOptimalRestaurant(radius, new Cost(prefCost, 0, Config.standardCurrencyStr),
                             quantity, new Coordinates(lon, lat), restaurantManager);
 
                     String dialougeString;
